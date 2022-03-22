@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="product/layout::head"></head>
+<body>
+<h1>Danh sách sản phẩm</h1>
+<a th:href="@{/products/create}">Tạo mới sản phẩm</a>
+<table id="products">
+    <tr>
+        <th>Mã sản phẩm</th>
+        <th>Tên sản phẩm</th>
+        <th>Giá sản phẩm</th>
+        <th>Mô tả sản phẩm</th>
+        <th>Ảnh sản phẩm</th>
+        <th colspan="2"></th>
+    </tr>
+    <tr th:each="product : ${products}">
+        <td th:text="${product.id}"></td>
+        <td >
+            <a th:href="@{/products/__${product.id}__}" th:text="${product.name}"></a>
+        </td>
+        <td th:text="${product.price}"></td>
+        <td th:text="${product.description}"></td>
+        <td><img th:src="@{/image/__${product.image}__}" alt="ảnh sản phẩm" height="100"></td>
+        <td><a th:href="@{/products/edit/__${product.id}__}">Chỉnh sửa</a></td>
+        <td><a th:href="@{/products/delete/__${product.id}__}">Xóa</a></td>
+    </tr>
+</table>
+<footer th:replace="product/layout::footer"></footer>
+</body>
+</html>

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="product/layout::head">
+</head>
+<body>
+<h1>Chỉnh sửa thông tin sản phẩm</h1>
+<a th:href="@{/products/list}">Danh sách sản phẩm</a>
+<form th:action="@{/products/edit/__${product.id}__}" method="post" th:object="${productForm}" enctype="multipart/form-data">
+    <input type="text" placeholder="mã sản phẩm" th:field="*{id}">
+    <input type="text" placeholder="tên sản phẩm" th:field="*{name}">
+    <input type="text" placeholder="giá sản phẩm" th:field="*{price}">
+    <input type="text" placeholder="mô tả sản phẩm" th:field="*{description}">
+    <input type="file" placeholder="Ảnh sản phẩm" th:field="*{image}">
+    <button>Chỉnh sửa</button>
+</form>
+<footer th:replace="product/layout::footer"></footer>
+</body>
+</html>

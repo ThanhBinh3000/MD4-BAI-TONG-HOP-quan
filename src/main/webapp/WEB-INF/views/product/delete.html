@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>Xóa sản phẩm</h1>
+<a th:href="@{/products/list}">Danh sách sản phẩm</a>
+<form th:action="@{/products/delete/__${product.id}__}" method="post">
+    <p th:text="${product.id}"></p>
+    <p th:text="${product.name}"></p>
+    <p th:text="${product.price}"></p>
+    <p th:text="${product.description}"></p>
+    <img th:src="@{${product.image}}" height="150" alt="">
+    <button>Delete</button>
+</form>
+</body>
+</html>
