@@ -35,29 +35,8 @@ public class ProductController {
         return modelAndView;
     }
 
-    @GetMapping("/products/create")
-    public ModelAndView showCreateProduct(){
-        ModelAndView modelAndView = new ModelAndView("/product/create");
-        modelAndView.addObject("product", new ProductForm());
-        return modelAndView;
-    }
-    @PostMapping("/products/create")
-    public ModelAndView createProduct(@ModelAttribute ProductForm productForm){
-        String fileName = productForm.getImage().getOriginalFilename();
-        long currentTime = System.currentTimeMillis();
-        fileName = currentTime + fileName;
-        try {
-            FileCopyUtils.copy(productForm.getImage().getBytes(), new File(uploadPath + fileName));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Product product = new Product(productForm.getId(), productForm.getName(), productForm.getPrice(),productForm.getDescription(), fileName);
-        productService.create(product);
-        return  new ModelAndView("redirect:/products/list");
-    }
-
     @GetMapping("/products/delete/{id}")
-    public ModelAndView showDeleteProduct(@PathVariable Integer id) {
+    public ModelAndView showDeleteProduct(@PathVariable Long id) {
         ModelAndView modelAndView = new ModelAndView("/product/delete");
         Product product = productService.findById(id);
         modelAndView.addObject("product", product);
@@ -65,44 +44,71 @@ public class ProductController {
     }
 
     @PostMapping("/products/delete/{id}")
-    public ModelAndView deleteProduct(@PathVariable Integer id) {
+    public ModelAndView deleteProduct(@PathVariable Long id) {
+        Product product = productService.findById(id);
+        File file = new File(uploadPath + product.getImage());
+        if (file.exists()){
+            file.delete();
+        }
         productService.removeById(id);
         return new ModelAndView("redirect:/products/list");
     }
 
+    @GetMapping("/products/create")
+    public ModelAndView showCreateProduct() {
+        ModelAndView modelAndView = new ModelAndView("/product/create");
+        modelAndView.addObject("product", new ProductForm());//Gửi 1 đối tượng product rỗng sang file view để tạo mới
+        return modelAndView;
+    }
+
+    @PostMapping("/products/create")
+    public ModelAndView createProduct(@ModelAttribute ProductForm productForm) {
+        String fileName = productForm.getImage().getOriginalFilename();
+        long currentTime = System.currentTimeMillis(); //Xử lý lấy thời gian hiện tại
+        fileName = currentTime + fileName;
+        try {
+            FileCopyUtils.copy(productForm.getImage().getBytes(), new File(uploadPath + fileName));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Product product = new Product(productForm.getId(), productForm.getName(), productForm.getPrice(), productForm.getDescription(), fileName);
+        productService.save(product);
+        return new ModelAndView("redirect:/products/list");
+    }
+
     @GetMapping("/products/edit/{id}")
-    public ModelAndView showEditForm(@PathVariable Integer id) {
+    public ModelAndView showEditForm(@PathVariable Long id) {
         ModelAndView modelAndView = new ModelAndView("/product/edit");
         Product product = productService.findById(id);
-        ProductForm productForm = new ProductForm(product.getId(), product.getName(), product.getPrice(), product.getDescription(), null);
         modelAndView.addObject("product", product);
-        modelAndView.addObject("productForm", productForm);
         return modelAndView;
     }
 
     @PostMapping("/products/edit/{id}")
-    public ModelAndView editProduct(@PathVariable Integer id, @ModelAttribute ProductForm productForm) {
-        MultipartFile multipartFile = productForm.getImage();
-
-        if(multipartFile.getSize() == 0){
-            Product productIntact = productService.findById(id);
-            Product product = new Product(productForm.getId(),productForm.getName(),productForm.getPrice(),productForm.getDescription(),productIntact.getImage());
-            productService.updateById(id,product);
-        } else{
-            String filename2 = productForm.getImage().getOriginalFilename();
-            long currentTime = System.currentTimeMillis();
-            filename2 = currentTime + filename2;
+    public ModelAndView editProduct(@PathVariable Long id, @ModelAttribute ProductForm productForm) {
+        MultipartFile img = productForm.getImage();
+        Product oldProduct = productService.findById(id);
+        if (img.getSize() != 0) {
+            String fileName = productForm.getImage().getOriginalFilename();
+            long currentTime = System.currentTimeMillis(); //Xử lý lấy thời gian hiện tại
+            fileName = currentTime + fileName;
+            oldProduct.setImage(fileName);
             try {
-                FileCopyUtils.copy(productForm.getImage().getBytes(), new File(uploadPath + filename2));
+                FileCopyUtils.copy(img.getBytes(), new File(uploadPath + fileName));
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            Product product = new Product(productForm.getId(),productForm.getName(),productForm.getPrice(),productForm.getDescription(),filename2);
-            productService.updateById(id, product);
         }
-
+        oldProduct.setPrice(productForm.getPrice());
+        oldProduct.setDescription(productForm.getDescription());
+        oldProduct.setName(productForm.getName());
+        productService.save(oldProduct);
         return new ModelAndView("redirect:/products/list");
-
     }
 
+    @GetMapping("/products/{id}")
+    public ModelAndView showProductDetail(@PathVariable Long id) {
+        Product product = productService.findById(id);
+        return new ModelAndView("/product/view", "product", product);
+    }
 }

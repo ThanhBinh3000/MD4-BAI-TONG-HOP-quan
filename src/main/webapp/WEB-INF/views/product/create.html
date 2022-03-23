@@ -8,7 +8,6 @@
 <h1>Tạo sản phẩm</h1>
 <a th:href="@{/products/list}">Danh sách sản phẩm</a>
 <form th:action="@{/products/create}" method="post" th:object="${product}" enctype="multipart/form-data">
-    <input type="text" placeholder="mã sản phẩm" th:field="*{id}">
     <input type="text" placeholder="tên sản phẩm" th:field="*{name}">
     <input type="text" placeholder="giá sản phẩm" th:field="*{price}">
     <input type="text" placeholder="mô tả sản phẩm" th:field="*{description}">

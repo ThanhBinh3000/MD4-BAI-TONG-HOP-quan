@@ -22,6 +22,10 @@ dependencies {
     //Thư viện cho layout của thymeleaf
     implementation group: 'nz.net.ultraq.thymeleaf', name: 'thymeleaf-layout-dialect', version: '2.5.2'
     implementation group: 'commons-fileupload', name: 'commons-fileupload', version: '1.4'
+    //Thư viện của hibernate
+    implementation group: 'org.hibernate', name: 'hibernate-core', version: '5.4.3.Final'
+    //Thư viên mysql
+    implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.22'
 }
 
 test {
