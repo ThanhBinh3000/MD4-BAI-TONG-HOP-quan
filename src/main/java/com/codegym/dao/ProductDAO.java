@@ -1,83 +1,65 @@
 package com.codegym.dao;
 
 import com.codegym.model.Product;
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
+import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import javax.transaction.Transactional;
 import java.util.List;
 
-public class ProductDAO implements IProductDAO {
-    private static SessionFactory sessionFactory;
-    private static EntityManager entityManager;
+import static javax.swing.text.html.HTML.Tag.SELECT;
 
-    static { //Cấu hình tạo kết nối ứng dụng với CSDL
-        try {
-            sessionFactory = new Configuration()
-                    .configure("hibernate.conf.xml")
-                    .buildSessionFactory();
-            entityManager = sessionFactory.createEntityManager();
-        } catch (HibernateException e) {
-            e.printStackTrace();
-        }
-    }
+
+@Component
+@Transactional//Để khai báo đang sử dụng transaction
+public class ProductDAO implements IProductDAO {
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Override
     public List<Product> findAll() {
-        String query = "SELECT p FROM Product as p";
-        TypedQuery<Product> typedQuery = entityManager.createQuery(query, Product.class);
-        return typedQuery.getResultList();
+        //HQL => TypedQuery => truy vấn sử dụng hibernate
+        //SQL => NativeQuery => truy vấn thuần
+        TypedQuery<Product> query = entityManager.createQuery("SELECT p FROM Product as p", Product.class);
+        return query.getResultList();
     }
 
     @Override
     public Product findById(Long id) {
-        if (id == null) {
-            return new Product();
+        TypedQuery<Product> query = entityManager.createQuery("select p from Product as p where p.id = ?1", Product.class);
+        query.setParameter(1, id);
+        try {
+            return query.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
         }
-        String query = "SELECT p from Product as p where p.id = :id";
-        TypedQuery<Product> typedQuery = entityManager.createQuery(query, Product.class);
-        typedQuery.setParameter("id", id);
-        return typedQuery.getSingleResult();
     }
 
     @Override
     public Product save(Product product) {
-        Session session = null;
-        Transaction transaction = null;
-        try {
-            session = sessionFactory.openSession();
-            transaction = session.beginTransaction();
-            Product oldProduct = findById(product.getId()); //Tìm xem có product truyền vào có id hay không
-            oldProduct.setName(product.getName());
-            oldProduct.setPrice(product.getPrice());
-            oldProduct.setDescription(product.getDescription());
-            oldProduct.setImage(product.getImage());
-            session.saveOrUpdate(oldProduct);
-            transaction.commit();
-            return oldProduct;
-        } catch (Exception e) {
-            e.printStackTrace();
-            if (transaction != null) {
-                transaction.rollback();
-            }
-        } finally {
-            if (session != null) {
-                session.close();
-            }
+        if (product.getId() == null) {
+            entityManager.persist(product); //persist tạo mới
+        } else {
+            entityManager.merge(product); //merge là cập nhật
         }
-        return null;
+        return product;
     }
 
     @Override
     public void removeById(Long id) {
-        Session session = sessionFactory.openSession();
-        Transaction transaction = session.beginTransaction();
         Product product = findById(id);
-        session.delete(product);
-        transaction.commit();
+        if (product != null) {
+            entityManager.remove(product);
+        }
+    }
+
+    @Override
+    public List<Product> findProductByNameContaining(String name) {
+        TypedQuery<Product> query = entityManager.createQuery("select p from Product  as p where p.name like ?1", Product.class);
+        query.setParameter(1, name);
+        return query.getResultList();
     }
 }

@@ -12,4 +12,6 @@ public interface IProductDAO {
     Product save(Product product);
 
     void removeById(Long id);
+
+    List<Product> findProductByNameContaining(String name);
 }

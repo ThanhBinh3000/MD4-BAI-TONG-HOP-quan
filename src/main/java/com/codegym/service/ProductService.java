@@ -5,13 +5,13 @@ import com.codegym.model.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+
 import java.util.List;
 
 @Service
 public class ProductService implements IProductService {
-@Autowired
-private IProductDAO productDAO;
+    @Autowired
+    private IProductDAO productDAO;
 
     @Override
     public List<Product> findAll() {
@@ -31,5 +31,11 @@ private IProductDAO productDAO;
     @Override
     public void removeById(Long id) {
         productDAO.removeById(id);
+    }
+
+    @Override
+    public List<Product> findProductByNameContaining(String name) {
+        name = "%" + name + "%";
+        return productDAO.findProductByNameContaining(name);
     }
 }

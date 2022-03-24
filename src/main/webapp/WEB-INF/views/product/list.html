@@ -4,6 +4,10 @@
 <body>
 <h1>Danh sách sản phẩm</h1>
 <a th:href="@{/products/create}">Tạo mới sản phẩm</a>
+<form th:action="@{/products/list}" method="GET">
+    <input type="text" name="q" placeholder="tìm kiếm">
+    <button>Tìm kiếm</button>
+</form>
 <table id="products">
     <tr>
         <th>Mã sản phẩm</th>
