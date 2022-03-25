@@ -8,6 +8,11 @@
     <input type="text" name="q" placeholder="tìm kiếm">
     <button>Tìm kiếm</button>
 </form>
+<form th:action="@{/products/search}" method="GET">
+    <input type="number" name="min" placeholder="gía thấp nhất">
+    <input type="number" name="max" placeholder="gía cao nhất">
+    <button>Tìm kiếm</button>
+</form>
 <table id="products">
     <tr>
         <th>Mã sản phẩm</th>

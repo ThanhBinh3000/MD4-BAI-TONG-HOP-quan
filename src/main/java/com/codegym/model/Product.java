@@ -20,6 +20,9 @@ public class Product {
 
     private String image;
 
+    @ManyToOne //Tạo khóa ngoại và thêm 1 cột category_id
+    private Category category;
+
     public Product() {
     }
 
@@ -69,5 +72,13 @@ public class Product {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
     }
 }

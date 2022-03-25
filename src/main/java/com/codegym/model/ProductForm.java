@@ -13,6 +13,8 @@ public class ProductForm {
 
     private MultipartFile image;
 
+    private Category category;
+
     public ProductForm() {
     }
 
@@ -62,5 +64,13 @@ public class ProductForm {
 
     public void setImage(MultipartFile image) {
         this.image = image;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
     }
 }

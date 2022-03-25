@@ -11,6 +11,12 @@
     <input type="text" placeholder="tên sản phẩm" th:field="*{name}">
     <input type="text" placeholder="giá sản phẩm" th:field="*{price}">
     <input type="text" placeholder="mô tả sản phẩm" th:field="*{description}">
+    <select th:field="*{category}">
+        <option value="" disabled selected>Chọn danh mục sản phẩm</option>
+        <th:block th:each="category : ${categories}">
+            <option th:value="${category.id}" th:text="${category.name}"></option>
+        </th:block>
+    </select>
     <input type="file" th:field="*{image}">
     <button>Tạo mới</button>
 </form>
