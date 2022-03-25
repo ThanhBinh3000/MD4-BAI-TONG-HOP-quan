@@ -7,6 +7,8 @@ import com.codegym.service.category.ICategoryService;
 import com.codegym.service.product.IProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
@@ -29,11 +31,12 @@ public class ProductController {
     private String uploadPath;
 
     @GetMapping("/products/list")
-    public ModelAndView showListProduct(@RequestParam(name = "q") Optional<String> q) {
+    public ModelAndView showListProduct(@RequestParam(name = "q") Optional<String> q, Pageable pageable) {
         ModelAndView modelAndView = new ModelAndView("/product/list");
-        Iterable<Product> products = productService.findAll();
+        Page<Product> products;
+      products = productService.findAll(pageable);
         if (q.isPresent()) {
-            products = productService.findProductByNameContaining(q.get());
+            products = productService.findProductByNameContaining(q.get(), pageable);
         }
         modelAndView.addObject("products", products);
         return modelAndView;

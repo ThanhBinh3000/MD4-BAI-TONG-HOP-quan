@@ -33,6 +33,11 @@
         <td><a th:href="@{/products/edit/__${product.id}__}">Chỉnh sửa</a></td>
         <td><a th:href="@{/products/delete/__${product.id}__}">Xóa</a></td>
     </tr>
+    <div>
+        <a th:href="@{'/products/list'(page=${products.number - 1})}" th:if="${products.hasPrevious()}">Trước</a>
+        <span th:text="${products.number + 1}"></span>/<span th:text="${products.totalPages}"></span>
+        <a th:href="@{'/products/list'(page=${products.number + 1})}" th:if="${products.hasNext()}">Sau</a>
+    </div>
 </table>
 <footer th:replace="product/layout::footer"></footer>
 </body>
