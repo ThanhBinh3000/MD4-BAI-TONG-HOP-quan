@@ -17,7 +17,7 @@
     <tr th:each="category : ${categories}">
         <td th:text="${category.id}"></td>
         <td >
-            <a th:href="@{/categories/__${category.id}__}" th:text="${category.name}"></a>
+            <a th:href="@{/categories/viewByCategory/__${category.id}__}" th:text="${category.name}"></a>
         </td>
 
         <td><a th:href="@{/categories/edit/__${category.id}__}">Chỉnh sửa</a></td>

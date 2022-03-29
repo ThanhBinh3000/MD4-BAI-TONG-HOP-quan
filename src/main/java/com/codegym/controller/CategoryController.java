@@ -87,7 +87,7 @@ public class CategoryController {
         categoryService.deleteCategory(id);
         return new ModelAndView("redirect:/categories/list");
     }
-    @GetMapping("/categories/viewByCategory/{id}")
+    @GetMapping("/viewByCategory/{id}")
     public ModelAndView ShowProductByCategoryId(@PathVariable Long id, @PageableDefault(value = 5) Pageable pageable) {
         Page<Product> products;
         products = productService.getProductWithName(id, pageable);

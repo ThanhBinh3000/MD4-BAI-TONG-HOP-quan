@@ -16,7 +16,7 @@ public interface IProductRepository extends PagingAndSortingRepository<Product, 
             "and image is not null", nativeQuery = true)
     Iterable<Product> findProductPriceBetween(Double min, Double max);
 
-    @Query(value = "select * from product join category on product.category_id = category.id where category_id = ?1", nativeQuery = true)
+    @Query(value = "select * from products join categories on products.category_id = categories.id where category_id = ?1", nativeQuery = true)
     Page<Product> getProductWithNameSQL(Long id, Pageable pageable);
 
 }

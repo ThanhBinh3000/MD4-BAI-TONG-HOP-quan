@@ -20,6 +20,7 @@
         <th>Giá sản phẩm</th>
         <th>Mô tả sản phẩm</th>
         <th>Ảnh sản phẩm</th>
+        <th>Thể loại sản phẩm</th>
         <th colspan="2">Action</th>
     </tr>
     <tr th:each="product : ${products}">
@@ -30,6 +31,7 @@
         <td th:text="${product.price}"></td>
         <td th:text="${product.description}"></td>
         <td><img th:src="@{/image/__${product.image}__}" alt="ảnh sản phẩm" height="100"></td>
+        <td><a th:text="${product.category.name}"></a></td>
         <td><a th:href="@{/products/edit/__${product.id}__}">Chỉnh sửa</a></td>
         <td><a th:href="@{/products/delete/__${product.id}__}">Xóa</a></td>
     </tr>
