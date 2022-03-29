@@ -50,4 +50,9 @@ public class ProductService implements IProductService {
         return productRepository.findProductPriceBetween(min, max);
     }
 
+    @Override
+    public Page<Product> getProductWithName(Long id, Pageable pageable) {
+        return productRepository.getProductWithNameSQL(id, pageable);
+    }
+
 }
