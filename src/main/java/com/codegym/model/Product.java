@@ -2,15 +2,15 @@ package com.codegym.model;
 
 import javax.persistence.*;
 
-@Entity//Tạo bảng
+@Entity
 @Table(name = "products")
 public class Product {
-    @Id//Khóa chính
-    @GeneratedValue(strategy = GenerationType.IDENTITY)//Tự tăng
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(columnDefinition = "Varchar(50)", nullable = false)
-    private String name; //khi tạo bảng string => varchar(255)
+    private String name;
 
     @Column(nullable = false)
     private double price;
@@ -20,7 +20,7 @@ public class Product {
 
     private String image;
 
-    @ManyToOne //Tạo khóa ngoại và thêm 1 cột category_id
+    @ManyToOne
     private Category category;
 
     public Product() {

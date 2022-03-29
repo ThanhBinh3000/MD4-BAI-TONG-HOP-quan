@@ -73,14 +73,14 @@ public class ProductController {
         ModelAndView modelAndView = new ModelAndView("/product/create");
         Iterable<Category> categories = categoryService.findAll();
         modelAndView.addObject("categories", categories);
-        modelAndView.addObject("product", new ProductForm());//Gửi 1 đối tượng product rỗng sang file view để tạo mới
+        modelAndView.addObject("product", new ProductForm());
         return modelAndView;
     }
 
     @PostMapping("/products/create")
     public ModelAndView createProduct(@ModelAttribute ProductForm productForm) {
         String fileName = productForm.getImage().getOriginalFilename();
-        long currentTime = System.currentTimeMillis(); //Xử lý lấy thời gian hiện tại
+        long currentTime = System.currentTimeMillis();
         fileName = currentTime + fileName;
         try {
             FileCopyUtils.copy(productForm.getImage().getBytes(), new File(uploadPath + fileName));
@@ -112,7 +112,7 @@ public class ProductController {
             Product oldProduct = product.get();
             if (img.getSize() != 0) {
                 String fileName = productForm.getImage().getOriginalFilename();
-                long currentTime = System.currentTimeMillis(); //Xử lý lấy thời gian hiện tại
+                long currentTime = System.currentTimeMillis();
                 fileName = currentTime + fileName;
                 oldProduct.setImage(fileName);
                 try {

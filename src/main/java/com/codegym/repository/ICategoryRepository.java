@@ -13,7 +13,9 @@ import javax.transaction.Transactional;
 @Repository
 public interface ICategoryRepository extends PagingAndSortingRepository<Category, Long> {
     Page<Category> findByNameContaining(String name, Pageable pageable);
+
     @Transactional
     @Modifying
     @Query(value = "call delete_category(?1)", nativeQuery = true)
-    void deleteCategory(Long id);}
+    void deleteCategory(Long id);
+}

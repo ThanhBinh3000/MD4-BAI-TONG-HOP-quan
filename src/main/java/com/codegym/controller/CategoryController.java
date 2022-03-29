@@ -81,11 +81,10 @@ public class CategoryController {
     @PostMapping("/delete/{id}")
     public ModelAndView DeleteCategory(@PathVariable Long id) {
         Optional<Category> category = categoryService.findById(id);
-        if (category.isPresent()) {
-            categoryService.deleteCategory(id);
-            return new ModelAndView("redirect:/categories/list");
-
+        if (!category.isPresent()) {
+            return new ModelAndView("/error-404");
         }
-        return new ModelAndView("/error-404");
+        categoryService.deleteCategory(id);
+        return new ModelAndView("redirect:/categories/list");
     }
 }
