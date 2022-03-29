@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
@@ -31,10 +32,10 @@ public class ProductController {
     private String uploadPath;
 
     @GetMapping("/products/list")
-    public ModelAndView showListProduct(@RequestParam(name = "q") Optional<String> q, Pageable pageable) {
+    public ModelAndView showListProduct(@RequestParam(name = "q") Optional<String> q,@PageableDefault(value = 5) Pageable pageable) {
         ModelAndView modelAndView = new ModelAndView("/product/list");
         Page<Product> products;
-      products = productService.findAll(pageable);
+        products = productService.findAll(pageable);
         if (q.isPresent()) {
             products = productService.findProductByNameContaining(q.get(), pageable);
         }

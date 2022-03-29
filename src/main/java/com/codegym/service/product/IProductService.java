@@ -9,4 +9,5 @@ public interface IProductService extends IGeneralService<Product> {
     Page<Product> findProductByNameContaining(String name, Pageable pageable);
     Page<Product> findAll(Pageable pageable);
     Iterable<Product> findProductPriceBetween(Double min, Double max);
+
 }

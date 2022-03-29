@@ -15,4 +15,5 @@ public interface IProductRepository extends PagingAndSortingRepository<Product, 
             "products where (price between ?1 and ?2) " +
             "and image is not null", nativeQuery = true)
     Iterable<Product> findProductPriceBetween(Double min, Double max);
+
 }

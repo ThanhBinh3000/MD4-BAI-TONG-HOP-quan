@@ -49,4 +49,5 @@ public class ProductService implements IProductService {
     public Iterable<Product> findProductPriceBetween(Double min, Double max) {
         return productRepository.findProductPriceBetween(min, max);
     }
+
 }

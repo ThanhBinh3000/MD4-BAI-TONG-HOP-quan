@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>Danh sách sản phẩm</h1>
+</div>
+<p>
+    <a th:href="@{/categories/list}">
+        Back list
+    </a>
+</p>
+<table id="products">
+    <tr>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Price</th>
+        <th>Description</th>
+        <th>Image</th>
+    </tr>
+    <tr th:each="product : ${product}">
+        <td th:text="${product.id}"></td>
+        <td th:text="${product.name}"></td>
+        <td th:text="${product.price}"></td>
+        <td th:text="${product.description}"></td>
+        <td><img th:src="@{/image/__${product.image}__}" alt="ảnh sản phẩm" height="100"></td>
+    </tr>
+    <div>
+        <a th:href="@{'/products/list'(page=${products.number - 1})}" th:if="${products.hasPrevious()}">Previous</a>
+        <span th:text="${products.number + 1}"></span>/<span th:text="${products.totalPages}"></span>
+        <a th:href="@{'/products/list'(page=${products.number + 1})}" th:if="${products.hasNext()}">Next</a>
+    </div>
+</table>
+</body>
+</html>
