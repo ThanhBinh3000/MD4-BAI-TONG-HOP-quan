@@ -9,7 +9,9 @@ import com.codegym.service.product.IProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.FileCopyUtils;
@@ -24,6 +26,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 @Controller
+@RequestMapping("/products")
 public class ProductController {
     @Autowired
     private IProductService productService;
@@ -39,9 +42,10 @@ public class ProductController {
         return new ModelAndView("error-404");
     }
 
-    @GetMapping("/products/list")
-    public ModelAndView showListProduct(@RequestParam(name = "q") Optional<String> q,@PageableDefault(value = 5) Pageable pageable) {
+    @GetMapping("/list")
+    public ModelAndView showListProduct(@RequestParam(name = "q") Optional<String> q,@RequestParam(name = "page",required = false, defaultValue = "0") Integer page) {
         ModelAndView modelAndView = new ModelAndView("/product/list");
+        PageRequest pageable = PageRequest.of(page,2, Sort.by("price").ascending());
         Page<Product> products;
         products = productService.findAll(pageable);
         if (q.isPresent()) {
@@ -51,7 +55,7 @@ public class ProductController {
         return modelAndView;
     }
 
-    @GetMapping("/products/delete/{id}")
+    @GetMapping("/delete/{id}")
     public ModelAndView showDeleteProduct(@PathVariable Long id) throws NotFoundException {
         Optional<Product> productOptional = productService.findById(id);
         if (!productOptional.isPresent()) {
@@ -62,7 +66,7 @@ public class ProductController {
         return modelAndView;
     }
 
-    @PostMapping("/products/delete/{id}")
+    @PostMapping("/delete/{id}")
     public ModelAndView deleteProduct(@PathVariable Long id) throws NotFoundException {
         Optional<Product> product = productService.findById(id);
         if (product.isPresent()) {
@@ -76,7 +80,7 @@ public class ProductController {
         throw new NotFoundException();
     }
 
-    @GetMapping("/products/create")
+    @GetMapping("/create")
     public ModelAndView showCreateProduct() {
         ModelAndView modelAndView = new ModelAndView("/product/create");
         Iterable<Category> categories = categoryService.findAll();
@@ -85,7 +89,7 @@ public class ProductController {
         return modelAndView;
     }
 
-    @PostMapping("/products/create")
+    @PostMapping("/create")
     public ModelAndView createProduct(@Valid @ModelAttribute("product") ProductForm productForm, BindingResult bindingResult) {
         if (bindingResult.hasFieldErrors()){
             return new ModelAndView("/product/create");
@@ -104,7 +108,7 @@ public class ProductController {
         return new ModelAndView("redirect:/products/list");
     }
 
-    @GetMapping("/products/edit/{id}")
+    @GetMapping("/edit/{id}")
     public ModelAndView showEditForm(@PathVariable Long id) throws NotFoundException {
         Optional<Product> productOptional = productService.findById(id);
         if (!productOptional.isPresent()) {
@@ -115,7 +119,7 @@ public class ProductController {
         return modelAndView;
     }
 
-    @PostMapping("/products/edit/{id}")
+    @PostMapping("/edit/{id}")
     public ModelAndView editProduct(@PathVariable Long id, @ModelAttribute ProductForm productForm) throws NotFoundException {
         MultipartFile img = productForm.getImage();
         Optional<Product> product = productService.findById(id);
@@ -141,7 +145,7 @@ public class ProductController {
         throw new NotFoundException();
     }
 
-    @GetMapping("/products/{id}")
+    @GetMapping("/{id}")
     public ModelAndView showProductDetail(@PathVariable Long id) throws NotFoundException {
         Optional<Product> productOptional = productService.findById(id);
         if (!productOptional.isPresent()) {
@@ -152,7 +156,7 @@ public class ProductController {
         return modelAndView;
     }
 
-    @GetMapping("/products/search")
+    @GetMapping("/search")
     public ModelAndView showProductSearch(@RequestParam("min") Double min, @RequestParam("max") Double max) {
         Iterable<Product> products = productService.findProductPriceBetween(min, max);
         ModelAndView modelAndView = new ModelAndView("/product/list");

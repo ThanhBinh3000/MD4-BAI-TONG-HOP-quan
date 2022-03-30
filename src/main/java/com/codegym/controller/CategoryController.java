@@ -8,7 +8,9 @@ import com.codegym.service.category.ICategoryService;
 import com.codegym.service.product.IProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -31,8 +33,9 @@ public class CategoryController {
     }
 
     @GetMapping("/list")
-    public ModelAndView showListCategory(@RequestParam(name = "q") Optional<String> q, @PageableDefault(value = 2) Pageable pageable) {
+    public ModelAndView showListCategory(@RequestParam(name = "q") Optional<String> q,@RequestParam(name = "page",required = false, defaultValue = "0") Integer page) {
         ModelAndView modelAndView = new ModelAndView("/category/list");
+        PageRequest pageable = PageRequest.of(page,2, Sort.by("id").ascending());
         Page<Category> categories;
         categories = categoryService.findAll(pageable);
         if (q.isPresent()) {
