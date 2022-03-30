@@ -1,6 +1,7 @@
 package com.codegym.controller;
 
 
+import com.codegym.exception.NotFoundException;
 import com.codegym.model.Category;
 import com.codegym.model.Product;
 import com.codegym.service.category.ICategoryService;
@@ -23,6 +24,11 @@ public class CategoryController {
 
     @Autowired
     private IProductService productService;
+
+    @ExceptionHandler(NotFoundException.class)
+    public ModelAndView notFoundPage(){
+        return new ModelAndView("error-404");
+    }
 
     @GetMapping("/list")
     public ModelAndView showListCategory(@RequestParam(name = "q") Optional<String> q, @PageableDefault(value = 2) Pageable pageable) {
@@ -50,10 +56,10 @@ public class CategoryController {
     }
 
     @GetMapping("/edit/{id}")
-    public ModelAndView ShowEdiCategory(@PathVariable Long id) {
+    public ModelAndView ShowEdiCategory(@PathVariable Long id) throws NotFoundException {
         Optional<Category> category = categoryService.findById(id);
         if (!category.isPresent()) {
-            return new ModelAndView("/error-404");
+            throw new NotFoundException();
         }
         ModelAndView modelAndView = new ModelAndView("/category/edit");
         modelAndView.addObject("category", category.get());
@@ -68,10 +74,10 @@ public class CategoryController {
 
 
     @GetMapping("/delete/{id}")
-    public ModelAndView ShowDeleteCategory(@PathVariable Long id) {
+    public ModelAndView ShowDeleteCategory(@PathVariable Long id) throws NotFoundException {
         Optional<Category> category = categoryService.findById(id);
         if (!category.isPresent()) {
-            return new ModelAndView("/error-404");
+            throw new NotFoundException();
         }
         ModelAndView modelAndView = new ModelAndView("/category/delete");
         modelAndView.addObject("category", category.get());
@@ -79,10 +85,10 @@ public class CategoryController {
     }
 
     @PostMapping("/delete/{id}")
-    public ModelAndView DeleteCategory(@PathVariable Long id) {
+    public ModelAndView DeleteCategory(@PathVariable Long id) throws NotFoundException {
         Optional<Category> category = categoryService.findById(id);
         if (!category.isPresent()) {
-            return new ModelAndView("/error-404");
+            throw new NotFoundException();
         }
         categoryService.deleteCategory(id);
         return new ModelAndView("redirect:/categories/list");

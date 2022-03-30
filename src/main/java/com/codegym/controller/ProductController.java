@@ -1,5 +1,6 @@
 package com.codegym.controller;
 
+import com.codegym.exception.NotFoundException;
 import com.codegym.model.Category;
 import com.codegym.model.Product;
 import com.codegym.model.ProductForm;
@@ -33,6 +34,11 @@ public class ProductController {
     @Value("${file-upload}")
     private String uploadPath;
 
+    @ExceptionHandler(NotFoundException.class)
+    public ModelAndView notFoundPage(){
+        return new ModelAndView("error-404");
+    }
+
     @GetMapping("/products/list")
     public ModelAndView showListProduct(@RequestParam(name = "q") Optional<String> q,@PageableDefault(value = 5) Pageable pageable) {
         ModelAndView modelAndView = new ModelAndView("/product/list");
@@ -46,10 +52,10 @@ public class ProductController {
     }
 
     @GetMapping("/products/delete/{id}")
-    public ModelAndView showDeleteProduct(@PathVariable Long id) {
+    public ModelAndView showDeleteProduct(@PathVariable Long id) throws NotFoundException {
         Optional<Product> productOptional = productService.findById(id);
         if (!productOptional.isPresent()) {
-            return new ModelAndView("error-404");
+            throw new NotFoundException();
         }
         ModelAndView modelAndView = new ModelAndView("/product/delete");
         modelAndView.addObject("product", productOptional.get());
@@ -57,7 +63,7 @@ public class ProductController {
     }
 
     @PostMapping("/products/delete/{id}")
-    public ModelAndView deleteProduct(@PathVariable Long id) {
+    public ModelAndView deleteProduct(@PathVariable Long id) throws NotFoundException {
         Optional<Product> product = productService.findById(id);
         if (product.isPresent()) {
             File file = new File(uploadPath + product.get().getImage());
@@ -67,7 +73,7 @@ public class ProductController {
             productService.removeById(id);
             return new ModelAndView("redirect:/products/list");
         }
-        return new ModelAndView("error-404");
+        throw new NotFoundException();
     }
 
     @GetMapping("/products/create")
@@ -99,10 +105,10 @@ public class ProductController {
     }
 
     @GetMapping("/products/edit/{id}")
-    public ModelAndView showEditForm(@PathVariable Long id) {
+    public ModelAndView showEditForm(@PathVariable Long id) throws NotFoundException {
         Optional<Product> productOptional = productService.findById(id);
         if (!productOptional.isPresent()) {
-            return new ModelAndView("error-404");
+            throw new NotFoundException();
         }
         ModelAndView modelAndView = new ModelAndView("/product/edit");
         modelAndView.addObject("product", productOptional.get());
@@ -110,7 +116,7 @@ public class ProductController {
     }
 
     @PostMapping("/products/edit/{id}")
-    public ModelAndView editProduct(@PathVariable Long id, @ModelAttribute ProductForm productForm) {
+    public ModelAndView editProduct(@PathVariable Long id, @ModelAttribute ProductForm productForm) throws NotFoundException {
         MultipartFile img = productForm.getImage();
         Optional<Product> product = productService.findById(id);
         if (product.isPresent()) {
@@ -132,14 +138,14 @@ public class ProductController {
             productService.save(oldProduct);
             return new ModelAndView("redirect:/products/list");
         }
-        return new ModelAndView("error-404");
+        throw new NotFoundException();
     }
 
     @GetMapping("/products/{id}")
-    public ModelAndView showProductDetail(@PathVariable Long id) {
+    public ModelAndView showProductDetail(@PathVariable Long id) throws NotFoundException {
         Optional<Product> productOptional = productService.findById(id);
         if (!productOptional.isPresent()) {
-            return new ModelAndView("error-404");
+            throw new NotFoundException();
         }
         ModelAndView modelAndView = new ModelAndView("/product/view");
         modelAndView.addObject("product", productOptional.get());
