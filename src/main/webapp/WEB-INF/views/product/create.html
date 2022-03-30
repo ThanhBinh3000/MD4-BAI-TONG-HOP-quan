@@ -9,8 +9,11 @@
 <a th:href="@{/products/list}">Danh sách sản phẩm</a>
 <form th:action="@{/products/create}" method="post" th:object="${product}" enctype="multipart/form-data">
     <input type="text" placeholder="tên sản phẩm" th:field="*{name}">
+    <p style="color: red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
     <input type="text" placeholder="giá sản phẩm" th:field="*{price}">
+    <p style="color: red" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></p>
     <input type="text" placeholder="mô tả sản phẩm" th:field="*{description}">
+    <p style="color: red" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></p>
     <select th:field="*{category}">
         <option value="" disabled selected>Chọn danh mục sản phẩm</option>
         <th:block th:each="category : ${categories}">

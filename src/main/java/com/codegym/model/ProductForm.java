@@ -2,13 +2,23 @@ package com.codegym.model;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 public class ProductForm {
     private Long id;
 
+
+    @NotEmpty(message = "khong duoc phep de trong")
+    @Size(min = 5, max = 20, message = "Ten san pham tu 5 den 20 ki tu")
     private String name;
 
+    @NotNull
     private double price;
 
+    @NotBlank
     private String description;
 
     private MultipartFile image;
@@ -18,12 +28,13 @@ public class ProductForm {
     public ProductForm() {
     }
 
-    public ProductForm(Long id, String name, double price, String description, MultipartFile image) {
+    public ProductForm(Long id, String name, double price, String description, MultipartFile image, Category category) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.description = description;
         this.image = image;
+        this.category = category;
     }
 
     public Long getId() {

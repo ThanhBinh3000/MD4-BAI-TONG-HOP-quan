@@ -1,6 +1,8 @@
 package com.codegym.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "products")
@@ -10,12 +12,15 @@ public class Product {
     private Long id;
 
     @Column(columnDefinition = "Varchar(50)", nullable = false)
+    @NotEmpty
     private String name;
 
     @Column(nullable = false)
+    @NotNull
     private double price;
 
     @Column(columnDefinition = "LONGTEXT", nullable = false)
+    @NotNull
     private String description;
 
     private String image;

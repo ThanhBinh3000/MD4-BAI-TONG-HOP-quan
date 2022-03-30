@@ -51,7 +51,6 @@ public class AppConfig implements WebMvcConfigurer, ApplicationContextAware {
     @Bean
     public SpringResourceTemplateResolver templateResolver() {
         SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver(); //SpringResourceTemplateResolver => class con của interface TemplateResolver
-        //Định nghĩa bộ khung cho view
         templateResolver.setPrefix("/WEB-INF/views/"); //tiền tố
         templateResolver.setSuffix(".html"); //Đuổi file
         templateResolver.setTemplateMode(TemplateMode.HTML); //Định dạng của view

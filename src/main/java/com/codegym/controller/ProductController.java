@@ -12,10 +12,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.FileCopyUtils;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
@@ -78,7 +80,10 @@ public class ProductController {
     }
 
     @PostMapping("/products/create")
-    public ModelAndView createProduct(@ModelAttribute ProductForm productForm) {
+    public ModelAndView createProduct(@Valid @ModelAttribute("product") ProductForm productForm, BindingResult bindingResult) {
+        if (bindingResult.hasFieldErrors()){
+            return new ModelAndView("/product/create");
+        }
         String fileName = productForm.getImage().getOriginalFilename();
         long currentTime = System.currentTimeMillis();
         fileName = currentTime + fileName;
