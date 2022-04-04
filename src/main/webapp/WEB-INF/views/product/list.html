@@ -1,46 +1,205 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="product/layout::head"></head>
+<html >
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+    <title>Spring Product</title>
+
+    <style type="text/css">
+        h1 {
+            background-color: blue;
+            color: white;
+            padding: 10px 0 10px 20px;
+        }
+
+        footer {
+            margin: 10px 0;
+        }
+
+        #products {
+            font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        #products td, #products th {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        #products tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        #products tr:hover {
+            background-color: #ddd;
+        }
+
+        #products th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: left;
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        input[type=text], input[type=email] {
+            width: 100%;
+            padding: 12px 0px;
+            margin: 8px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        input[type=submit] {
+            width: 300px;
+            background-color: #4CAF50;
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        input[type=submit]:hover {
+            background-color: #45a049;
+        }
+
+        #form {
+            width: 500px;
+            border-radius: 5px;
+            background-color: #f2f2f2;
+            padding: 20px;
+        }
+
+        .notify span {
+            font-size: 15px;
+            color: blue;
+        }
+    </style>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+</head>
 <body>
 <h1>Danh sách sản phẩm</h1>
 <a th:href="@{/products/create}">Tạo mới sản phẩm</a>
-<form th:action="@{/products/list}" method="GET">
-    <input type="text" name="q" placeholder="tìm kiếm">
-    <button>Tìm kiếm</button>
+<form>
+    <input type="text" id="q" placeholder="tìm kiếm">
+    <button type="button" onclick="searchProduct()">Tìm kiếm</button>
 </form>
-<form th:action="@{/products/search}" method="GET">
-    <input type="number" name="min" placeholder="gía thấp nhất">
-    <input type="number" name="max" placeholder="gía cao nhất">
-    <button>Tìm kiếm</button>
+<form>
+    <div>
+        <label for="name">Tên sản phẩm:</label>
+        <input type="text" id="name">
+    </div>
+    <div>
+        <label for="price">Giá sản phẩm:</label>
+        <input type="text" id="price">
+    </div>
+    <div>
+        <label for="description">Mô tả sản phẩm:</label>
+        <input type="text" id="description">
+    </div>
+    <div>
+        <label for="image">Ảnh sản phẩm:</label>
+        <input type="text" id="image">
+    </div>
+    <button type="button" onclick="createNewProduct()">Tạo mới</button>
 </form>
 <table id="products">
+    <thead>
     <tr>
         <th>Mã sản phẩm</th>
         <th>Tên sản phẩm</th>
         <th>Giá sản phẩm</th>
         <th>Mô tả sản phẩm</th>
         <th>Ảnh sản phẩm</th>
-        <th>Thể loại sản phẩm</th>
-        <th colspan="2">Action</th>
+        <th colspan="2"></th>
     </tr>
-    <tr th:each="product : ${products}">
-        <td th:text="${product.id}"></td>
-        <td >
-            <a th:href="@{/products/__${product.id}__}" th:text="${product.name}"></a>
-        </td>
-        <td th:text="${product.price}"></td>
-        <td th:text="${product.description}"></td>
-        <td><img th:src="@{/image/__${product.image}__}" alt="ảnh sản phẩm" height="100"></td>
-        <td><a th:text="${product.category.name}"></a></td>
-        <td><a th:href="@{/products/edit/__${product.id}__}">Chỉnh sửa</a></td>
-        <td><a th:href="@{/products/delete/__${product.id}__}">Xóa</a></td>
-    </tr>
-    <div>
-        <a th:href="@{'/products/list'(page=${products.number - 1})}" th:if="${products.hasPrevious()}">Trước</a>
-        <span th:text="${products.number + 1}"></span>/<span th:text="${products.totalPages}"></span>
-        <a th:href="@{'/products/list'(page=${products.number + 1})}" th:if="${products.hasNext()}">Sau</a>
-    </div>
+    </thead>
+    <tbody id="body-table-product">
+    </tbody>
 </table>
-<footer th:replace="product/layout::footer"></footer>
+<script>
+    function getAllProduct() {
+        $.ajax({
+            type: 'GET',
+            url: '/productses',
+            success: function (data) {
+                let content = '';
+                for (let i = 0; i < data.length; i++) {
+                    content+=`<tr>
+        <td>${i+1}</td>
+        <td>${data[i].name}</td>
+        <td>${data[i].price}</td>
+        <td>${data[i].description}</td>
+        <td>${data[i].image}</td>
+        <td>Edit</td>
+        <td>Delete</td>
+    </tr>`
+                }
+                $('#body-table-product').html(content);
+            }
+        })
+    }
+
+    function searchProduct(){
+        let q = $('#q').val();
+        let content = "";
+        $.ajax({
+            type: 'GET',
+            url: `/productses?q=${q}`,
+            success: function (data) {
+                let content = '';
+                for (let i = 0; i < data.length; i++) {
+                    content+=`<tr>
+        <td>${i+1}</td>
+        <td>${data[i].name}</td>
+        <td>${data[i].price}</td>
+        <td>${data[i].description}</td>
+        <td>${data[i].image}</td>
+        <td>Edit</td>
+        <td>Delete</td>
+    </tr>`
+                }
+                $('#body-table-product').html(content);
+            }
+        })
+    }
+
+    function createNewProduct() {
+        let inputName = $('#name').val();
+        let inputPrice = $('#price').val();
+        let inputDescription=$('#description').val();
+        let inputImage = $('#image').val();
+        let product = {
+            name: inputName,
+            price: inputPrice,
+            description: inputDescription,
+            image: inputImage
+        }
+        $.ajax({
+            type: 'POST',
+            url: '/productses',
+            data: JSON.stringify(product),
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type':'application/json'
+            },
+            success: function (){
+                getAllProduct()
+            }
+        })
+    }
+    $(document).ready(function (){
+        getAllProduct();
+    })
+
+</script>
 </body>
 </html>
