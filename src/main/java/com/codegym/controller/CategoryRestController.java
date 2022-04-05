@@ -14,9 +14,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
-
 @RestController
-@RequestMapping("/categoriesa")
+@CrossOrigin("*")
+@RequestMapping("/categories")
 public class CategoryRestController {
     @Autowired
     private ICategoryService categoryService;

@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
-<h1>lỗi rồi bạn ê</h1>
+<a href="/product/not-found?lang=en">Englist</a>|<a href="/product/not-found?lang=vi">Vietnamese</a>
+<h1 th:text="#{notfound.text}"></h1>
+<p th:text="#{classname.text}"></p>
 </body>
 </html>

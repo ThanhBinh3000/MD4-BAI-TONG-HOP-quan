@@ -87,7 +87,7 @@
 </head>
 <body>
 <h1>Danh sách sản phẩm</h1>
-<a th:href="@{/products/create}">Tạo mới sản phẩm</a>
+<a th:href="@{/product/create}">Tạo mới sản phẩm</a>
 <form>
     <input type="text" id="q" placeholder="tìm kiếm">
     <button type="button" onclick="searchProduct()">Tìm kiếm</button>
@@ -129,7 +129,7 @@
     function getAllProduct() {
         $.ajax({
             type: 'GET',
-            url: '/productses',
+            url: '/products',
             success: function (data) {
                 let content = '';
                 for (let i = 0; i < data.length; i++) {
@@ -153,7 +153,7 @@
         let content = "";
         $.ajax({
             type: 'GET',
-            url: `/productses?q=${q}`,
+            url: `/products?q=${q}`,
             success: function (data) {
                 let content = '';
                 for (let i = 0; i < data.length; i++) {
@@ -185,7 +185,7 @@
         }
         $.ajax({
             type: 'POST',
-            url: '/productses',
+            url: '/products',
             data: JSON.stringify(product),
             headers: {
                 'Accept': 'application/json',

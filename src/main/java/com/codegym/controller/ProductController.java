@@ -26,7 +26,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 @Controller
-@RequestMapping("/products")
+@RequestMapping("/product")
 public class ProductController {
     @Autowired
     private IProductService productService;
@@ -162,5 +162,9 @@ public class ProductController {
         ModelAndView modelAndView = new ModelAndView("/product/list");
         modelAndView.addObject("products", products);
         return modelAndView;
+    }
+    @GetMapping("/not-found")
+    public String notFound(){
+        return "error-404";
     }
 }

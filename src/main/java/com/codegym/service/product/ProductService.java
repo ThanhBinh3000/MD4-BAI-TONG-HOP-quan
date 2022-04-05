@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.Optional;
 
@@ -54,5 +55,6 @@ public class ProductService implements IProductService {
     public Page<Product> getProductWithName(Long id, Pageable pageable) {
         return productRepository.getProductWithNameSQL(id, pageable);
     }
+
 
 }

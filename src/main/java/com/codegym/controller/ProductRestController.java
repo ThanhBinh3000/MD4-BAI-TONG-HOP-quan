@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/productses")
+@CrossOrigin("*")
+@RequestMapping("/products")
 public class ProductRestController {
     @Autowired
     private IProductService productService;
